@@ -87,6 +87,43 @@ def add_task(project_id, title, assigned_to):
     print(f"Task added: {title}")
 
 
+def list_tasks():
+    data = load_data()
+
+    if not data["tasks"]:
+        print("No tasks found.")
+        return
+
+    for task in data["tasks"]:
+        print(
+            f"ID: {task['id']} | "
+            f"Project ID: {task['project_id']} | "
+            f"{task['title']} | "
+            f"Status: {task['status']} | "
+            f"Assigned To: {task['assigned_to']}"
+        )
+
+
+def complete_task(task_id):
+    data = load_data()
+
+    for task in data["tasks"]:
+
+        if task["id"] == task_id:
+
+            task["status"] = "Completed"
+
+            save_data(data)
+
+            print(
+                f"Task {task_id} marked as completed."
+            )
+
+            return
+
+    print("Task not found.")
+
+
 def main():
 
     parser = argparse.ArgumentParser(
@@ -174,6 +211,24 @@ def main():
         required=True
     )
 
+    # list-tasks
+    subparsers.add_parser(
+        "list-tasks",
+        help="List all tasks"
+    )
+
+    # complete-task
+    complete_task_parser = subparsers.add_parser(
+        "complete-task",
+        help="Mark a task as completed"
+    )
+
+    complete_task_parser.add_argument(
+        "--task-id",
+        required=True,
+        type=int
+    )
+
     args = parser.parse_args()
 
     if args.command == "add-user":
@@ -201,6 +256,14 @@ def main():
             args.project_id,
             args.title,
             args.assigned_to
+        )
+
+    elif args.command == "list-tasks":
+        list_tasks()
+
+    elif args.command == "complete-task":
+        complete_task(
+            args.task_id
         )
 
 
