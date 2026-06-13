@@ -45,6 +45,30 @@ def list_users():
         )
 
 
+def add_project(user_id, title, description, due_date):
+    """
+    Add a project to the database.
+    """
+
+    data = load_data()
+
+    project = {
+        "id": len(data["projects"]) + 1,
+        "user_id": user_id,
+        "title": title,
+        "description": description,
+        "due_date": due_date
+    }
+
+    data["projects"].append(project)
+
+    save_data(data)
+
+    print(
+        f"Project added: {title}"
+    )
+
+
 def main():
 
     parser = argparse.ArgumentParser(
@@ -55,7 +79,7 @@ def main():
         dest="command"
     )
 
-    # add-user command
+    # add-user
     add_user_parser = subparsers.add_parser(
         "add-user",
         help="Add a new user"
@@ -71,10 +95,37 @@ def main():
         required=True
     )
 
-    # list-users command
+    # list-users
     subparsers.add_parser(
         "list-users",
         help="List all users"
+    )
+
+    # add-project
+    add_project_parser = subparsers.add_parser(
+        "add-project",
+        help="Add a project"
+    )
+
+    add_project_parser.add_argument(
+        "--user-id",
+        required=True,
+        type=int
+    )
+
+    add_project_parser.add_argument(
+        "--title",
+        required=True
+    )
+
+    add_project_parser.add_argument(
+        "--description",
+        required=True
+    )
+
+    add_project_parser.add_argument(
+        "--due-date",
+        required=True
     )
 
     args = parser.parse_args()
@@ -87,6 +138,14 @@ def main():
 
     elif args.command == "list-users":
         list_users()
+
+    elif args.command == "add-project":
+        add_project(
+            args.user_id,
+            args.title,
+            args.description,
+            args.due_date
+        )
 
 
 if __name__ == "__main__":
