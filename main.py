@@ -5,10 +5,6 @@ from utils.storage import save_data
 
 
 def add_user(name, email):
-    """
-    Add a user to the database.
-    """
-
     data = load_data()
 
     user = {
@@ -21,16 +17,10 @@ def add_user(name, email):
 
     save_data(data)
 
-    print(
-        f"User added: {name} ({email})"
-    )
+    print(f"User added: {name} ({email})")
 
 
 def list_users():
-    """
-    Display all users.
-    """
-
     data = load_data()
 
     if not data["users"]:
@@ -46,10 +36,6 @@ def list_users():
 
 
 def add_project(user_id, title, description, due_date):
-    """
-    Add a project to the database.
-    """
-
     data = load_data()
 
     project = {
@@ -64,16 +50,10 @@ def add_project(user_id, title, description, due_date):
 
     save_data(data)
 
-    print(
-        f"Project added: {title}"
-    )
+    print(f"Project added: {title}")
 
 
 def list_projects():
-    """
-    Display all projects.
-    """
-
     data = load_data()
 
     if not data["projects"]:
@@ -87,6 +67,24 @@ def list_projects():
             f"{project['title']} | "
             f"Due: {project['due_date']}"
         )
+
+
+def add_task(project_id, title, assigned_to):
+    data = load_data()
+
+    task = {
+        "id": len(data["tasks"]) + 1,
+        "project_id": project_id,
+        "title": title,
+        "status": "Pending",
+        "assigned_to": assigned_to
+    }
+
+    data["tasks"].append(task)
+
+    save_data(data)
+
+    print(f"Task added: {title}")
 
 
 def main():
@@ -154,6 +152,28 @@ def main():
         help="List all projects"
     )
 
+    # add-task
+    add_task_parser = subparsers.add_parser(
+        "add-task",
+        help="Add a task"
+    )
+
+    add_task_parser.add_argument(
+        "--project-id",
+        required=True,
+        type=int
+    )
+
+    add_task_parser.add_argument(
+        "--title",
+        required=True
+    )
+
+    add_task_parser.add_argument(
+        "--assigned-to",
+        required=True
+    )
+
     args = parser.parse_args()
 
     if args.command == "add-user":
@@ -175,6 +195,13 @@ def main():
 
     elif args.command == "list-projects":
         list_projects()
+
+    elif args.command == "add-task":
+        add_task(
+            args.project_id,
+            args.title,
+            args.assigned_to
+        )
 
 
 if __name__ == "__main__":
