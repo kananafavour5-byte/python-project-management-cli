@@ -4,6 +4,11 @@
             "id": 1,
             "name": "Alex",
             "email": "alex@gmail.com"
+        },
+        {
+            "id": 2,
+            "name": "Jane",
+            "email": "jane@gmail.com"
         }
     ],
     "projects": [],

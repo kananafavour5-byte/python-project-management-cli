@@ -1,42 +1,64 @@
-from models.user import User
-from models.project import Project
-from models.task import Task
+import argparse
+
+from utils.storage import load_data
+from utils.storage import save_data
 
 
-user = User(
-    "Alex",
-    "alex@gmail.com"
-)
+def add_user(name, email):
+    """
+    Add a user to the database.
+    """
 
-project = Project(
-    "CLI Tool",
-    "Python Project Management Application",
-    "2026-08-01"
-)
+    data = load_data()
 
-task1 = Task(
-    "Create User Class",
-    "Alex"
-)
+    user = {
+        "id": len(data["users"]) + 1,
+        "name": name,
+        "email": email
+    }
 
-task2 = Task(
-    "Build CLI Commands",
-    "Alex"
-)
+    data["users"].append(user)
 
-project.add_task(task1)
-project.add_task(task2)
+    save_data(data)
 
-user.add_project(project)
+    print(
+        f"User added: {name} ({email})"
+    )
 
-print(user)
 
-print("\nProjects:")
+def main():
 
-for project in user.projects:
-    print(project)
+    parser = argparse.ArgumentParser(
+        description="Project Management CLI"
+    )
 
-    print("Tasks:")
+    subparsers = parser.add_subparsers(
+        dest="command"
+    )
 
-    for task in project.tasks:
-        print(task)
+    add_user_parser = subparsers.add_parser(
+        "add-user",
+        help="Add a new user"
+    )
+
+    add_user_parser.add_argument(
+        "--name",
+        required=True
+    )
+
+    add_user_parser.add_argument(
+        "--email",
+        required=True
+    )
+
+    args = parser.parse_args()
+
+    if args.command == "add-user":
+        add_user(
+            args.name,
+            args.email
+        )
+
+
+if __name__ == "__main__":
+    main()
