@@ -1,4 +1,5 @@
 import argparse
+from rich import print
 
 from utils.storage import load_data
 from utils.storage import save_data
