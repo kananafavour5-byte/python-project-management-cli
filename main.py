@@ -26,6 +26,25 @@ def add_user(name, email):
     )
 
 
+def list_users():
+    """
+    Display all users.
+    """
+
+    data = load_data()
+
+    if not data["users"]:
+        print("No users found.")
+        return
+
+    for user in data["users"]:
+        print(
+            f"ID: {user['id']} | "
+            f"{user['name']} | "
+            f"{user['email']}"
+        )
+
+
 def main():
 
     parser = argparse.ArgumentParser(
@@ -36,6 +55,7 @@ def main():
         dest="command"
     )
 
+    # add-user command
     add_user_parser = subparsers.add_parser(
         "add-user",
         help="Add a new user"
@@ -51,6 +71,12 @@ def main():
         required=True
     )
 
+    # list-users command
+    subparsers.add_parser(
+        "list-users",
+        help="List all users"
+    )
+
     args = parser.parse_args()
 
     if args.command == "add-user":
@@ -58,6 +84,9 @@ def main():
             args.name,
             args.email
         )
+
+    elif args.command == "list-users":
+        list_users()
 
 
 if __name__ == "__main__":
