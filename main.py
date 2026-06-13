@@ -69,6 +69,26 @@ def add_project(user_id, title, description, due_date):
     )
 
 
+def list_projects():
+    """
+    Display all projects.
+    """
+
+    data = load_data()
+
+    if not data["projects"]:
+        print("No projects found.")
+        return
+
+    for project in data["projects"]:
+        print(
+            f"ID: {project['id']} | "
+            f"User ID: {project['user_id']} | "
+            f"{project['title']} | "
+            f"Due: {project['due_date']}"
+        )
+
+
 def main():
 
     parser = argparse.ArgumentParser(
@@ -128,6 +148,12 @@ def main():
         required=True
     )
 
+    # list-projects
+    subparsers.add_parser(
+        "list-projects",
+        help="List all projects"
+    )
+
     args = parser.parse_args()
 
     if args.command == "add-user":
@@ -146,6 +172,9 @@ def main():
             args.description,
             args.due_date
         )
+
+    elif args.command == "list-projects":
+        list_projects()
 
 
 if __name__ == "__main__":
